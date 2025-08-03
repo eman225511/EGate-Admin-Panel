@@ -38,7 +38,7 @@ export default function KeysList({
     setActionError('')
 
     try {
-      const response = await fetch(`${apiUrl}/info?key=${encodeURIComponent(key)}&admin=${encodeURIComponent(adminPassword)}`)
+      const response = await fetch(`/api/info?apiUrl=${encodeURIComponent(apiUrl)}&key=${encodeURIComponent(key)}&admin=${encodeURIComponent(adminPassword)}`)
       
       if (!response.ok) {
         throw new Error(`Failed to get key info: ${response.status}`)
@@ -70,7 +70,9 @@ export default function KeysList({
     setActionError('')
 
     try {
-      const response = await fetch(`${apiUrl}/delete?key=${encodeURIComponent(key)}&admin=${encodeURIComponent(adminPassword)}`)
+      const response = await fetch(`/api/delete?apiUrl=${encodeURIComponent(apiUrl)}&key=${encodeURIComponent(key)}&admin=${encodeURIComponent(adminPassword)}`, {
+        method: 'DELETE'
+      })
       
       if (!response.ok) {
         throw new Error(`Failed to delete key: ${response.status}`)
@@ -103,7 +105,9 @@ export default function KeysList({
     setActionError('')
 
     try {
-      const response = await fetch(`${apiUrl}/adminReset?key=${encodeURIComponent(key)}&admin=${encodeURIComponent(adminPassword)}`)
+      const response = await fetch(`/api/reset?apiUrl=${encodeURIComponent(apiUrl)}&key=${encodeURIComponent(key)}&admin=${encodeURIComponent(adminPassword)}`, {
+        method: 'POST'
+      })
       
       if (!response.ok) {
         throw new Error(`Failed to reset key: ${response.status}`)

@@ -18,16 +18,16 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
     setError('')
 
     try {
-      // Test the ping endpoint first
-      const response = await fetch(`${apiUrl}/ping`)
+      // Test the ping endpoint first through our proxy
+      const response = await fetch(`/api/ping?apiUrl=${encodeURIComponent(apiUrl)}&admin=${encodeURIComponent(adminPassword)}`)
       
       if (!response.ok) {
         throw new Error(`API ping failed: ${response.status}`)
       }
 
-      const pingData = await response.json()
+      const pingData = await response.text()
       
-      if (pingData.status !== 'ok') {
+      if (!pingData.includes('pong') && !pingData.includes('ok')) {
         throw new Error('API ping returned invalid status')
       }
 

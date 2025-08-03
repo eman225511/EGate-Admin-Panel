@@ -20,7 +20,16 @@ export default function CreateKeyForm({ apiUrl, adminPassword, onKeyCreated }: C
     setSuccess('')
 
     try {
-      const response = await fetch(`${apiUrl}/make?admin=${encodeURIComponent(adminPassword)}`)
+      const response = await fetch('/api/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          apiUrl,
+          admin: adminPassword
+        })
+      })
       
       if (response.status === 403) {
         throw new Error('Invalid admin password')

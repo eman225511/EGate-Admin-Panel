@@ -28,7 +28,7 @@ export default function AdminDashboard({ apiUrl, adminPassword, onLogout }: Admi
     setError('')
 
     try {
-      const response = await fetch(`${apiUrl}/dump?admin=${encodeURIComponent(adminPassword)}`)
+      const response = await fetch(`/api/dump?apiUrl=${encodeURIComponent(apiUrl)}&admin=${encodeURIComponent(adminPassword)}`)
       
       if (response.status === 403) {
         throw new Error('Invalid admin password')
