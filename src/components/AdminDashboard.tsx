@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import KeysList from './KeysList'
 import CreateKeyForm from './CreateKeyForm'
 
@@ -23,7 +23,7 @@ export default function AdminDashboard({ apiUrl, adminPassword, onLogout }: Admi
   const [error, setError] = useState('')
   const [activeTab, setActiveTab] = useState<'keys' | 'create'>('keys')
 
-  const loadKeys = async () => {
+  const loadKeys = useCallback(async () => {
     setIsLoading(true)
     setError('')
 
@@ -54,11 +54,11 @@ export default function AdminDashboard({ apiUrl, adminPassword, onLogout }: Admi
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [apiUrl, adminPassword])
 
   useEffect(() => {
     loadKeys()
-  }, [])
+  }, [loadKeys])
 
   const handleKeyDeleted = (deletedKey: string) => {
     setKeys(keys.filter(k => k.key !== deletedKey))

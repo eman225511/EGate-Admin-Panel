@@ -287,7 +287,7 @@ export default function KeysList({
             </div>
           ) : (
             <div className="p-4 border border-gray-200 rounded-lg bg-gray-50 text-center text-gray-500">
-              Click "Info" on a key to view details
+              Click &quot;Info&quot; on a key to view details
             </div>
           )}
         </div>
