@@ -33,6 +33,9 @@ export default function KeysList({
   const [actionLoading, setActionLoading] = useState<string | null>(null)
   const [actionError, setActionError] = useState('')
   const [copyFeedback, setCopyFeedback] = useState<string | null>(null)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [sortBy, setSortBy] = useState<'date' | 'key' | 'hwid'>('date')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
 
   const handleCopyKey = async (key: string, event: any) => {
     event.stopPropagation() // Prevent triggering the key info click
@@ -44,6 +47,38 @@ export default function KeysList({
       console.error('Failed to copy key:', err)
     }
   }
+
+  // Filter and sort keys
+  const filteredAndSortedKeys = keys
+    .filter(key => {
+      if (!searchTerm) return true
+      const searchLower = searchTerm.toLowerCase()
+      return (
+        key.key.toLowerCase().includes(searchLower) ||
+        (key.hwid && key.hwid.toLowerCase().includes(searchLower))
+      )
+    })
+    .sort((a, b) => {
+      let comparison = 0
+      
+      switch (sortBy) {
+        case 'date':
+          const dateA = new Date(a.created || 0).getTime()
+          const dateB = new Date(b.created || 0).getTime()
+          comparison = dateA - dateB
+          break
+        case 'key':
+          comparison = a.key.localeCompare(b.key)
+          break
+        case 'hwid':
+          const hwidA = a.hwid || ''
+          const hwidB = b.hwid || ''
+          comparison = hwidA.localeCompare(hwidB)
+          break
+      }
+      
+      return sortOrder === 'asc' ? comparison : -comparison
+    })
 
   const handleGetKeyInfo = async (key: string) => {
     setActionLoading(`info-${key}`)
@@ -175,7 +210,7 @@ export default function KeysList({
     <div>
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-medium text-gray-900">
-          License Keys ({keys.length})
+          License Keys ({filteredAndSortedKeys.length}{keys.length !== filteredAndSortedKeys.length ? ` of ${keys.length}` : ''})
         </h3>
         <button
           onClick={onRefresh}
@@ -183,6 +218,76 @@ export default function KeysList({
         >
           Refresh
         </button>
+      </div>
+
+      {/* Search and Filter Controls */}
+      <div className="mb-6 space-y-4">
+        {/* Search Bar */}
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <input
+            type="text"
+            placeholder="Search keys or HWID..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+          />
+          {searchTerm && (
+            <button
+              onClick={() => setSearchTerm('')}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center"
+            >
+              <svg className="h-5 w-5 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          )}
+        </div>
+
+        {/* Sort Controls */}
+        <div className="flex flex-wrap gap-4 items-center">
+          <div className="flex items-center space-x-2">
+            <label className="text-sm font-medium text-gray-700">Sort by:</label>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as 'date' | 'key' | 'hwid')}
+              className="border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="date">Date Created</option>
+              <option value="key">Key</option>
+              <option value="hwid">HWID</option>
+            </select>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <label className="text-sm font-medium text-gray-700">Order:</label>
+            <select
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
+              className="border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="desc">Newest First</option>
+              <option value="asc">Oldest First</option>
+            </select>
+          </div>
+
+          {(searchTerm || sortBy !== 'date' || sortOrder !== 'desc') && (
+            <button
+              onClick={() => {
+                setSearchTerm('')
+                setSortBy('date')
+                setSortOrder('desc')
+              }}
+              className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-md hover:bg-gray-50"
+            >
+              Clear Filters
+            </button>
+          )}
+        </div>
       </div>
 
       {actionError && (
@@ -194,7 +299,18 @@ export default function KeysList({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Keys List */}
         <div className="space-y-3">
-          {keys.map((keyObj) => (
+          {filteredAndSortedKeys.length === 0 && searchTerm ? (
+            <div className="text-center py-8">
+              <p className="text-gray-600 mb-2">No keys found matching &quot;{searchTerm}&quot;</p>
+              <button
+                onClick={() => setSearchTerm('')}
+                className="text-blue-600 hover:text-blue-800 text-sm"
+              >
+                Clear search
+              </button>
+            </div>
+          ) : (
+            filteredAndSortedKeys.map((keyObj) => (
             <div
               key={keyObj.key}
               className={`p-4 border rounded-lg cursor-pointer hover:border-gray-300 transition-colors ${
@@ -227,7 +343,8 @@ export default function KeysList({
                 )}
               </div>
             </div>
-          ))}
+          ))
+          )}
         </div>
 
         {/* Key Details */}
