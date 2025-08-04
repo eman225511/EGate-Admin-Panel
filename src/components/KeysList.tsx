@@ -185,37 +185,15 @@ export default function KeysList({
           {keys.map((keyObj) => (
             <div
               key={keyObj.key}
-              className={`p-4 border rounded-lg ${
+              className={`p-4 border rounded-lg cursor-pointer hover:border-gray-300 transition-colors ${
                 selectedKey === keyObj.key ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
               }`}
+              onClick={() => handleGetKeyInfo(keyObj.key)}
             >
-              <div className="flex items-center justify-between mb-2">
+              <div className="mb-2">
                 <h4 className="font-mono text-sm font-medium text-gray-900 break-all">
                   {keyObj.key}
                 </h4>
-                <div className="flex space-x-1">
-                  <button
-                    onClick={() => handleGetKeyInfo(keyObj.key)}
-                    disabled={actionLoading === `info-${keyObj.key}`}
-                    className="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200 disabled:opacity-50"
-                  >
-                    {actionLoading === `info-${keyObj.key}` ? '...' : 'Info'}
-                  </button>
-                  <button
-                    onClick={() => handleResetKey(keyObj.key)}
-                    disabled={actionLoading === `reset-${keyObj.key}`}
-                    className="px-2 py-1 text-xs bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-200 disabled:opacity-50"
-                  >
-                    {actionLoading === `reset-${keyObj.key}` ? '...' : 'Reset'}
-                  </button>
-                  <button
-                    onClick={() => handleDeleteKey(keyObj.key)}
-                    disabled={actionLoading === `delete-${keyObj.key}`}
-                    className="px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200 disabled:opacity-50"
-                  >
-                    {actionLoading === `delete-${keyObj.key}` ? '...' : 'Delete'}
-                  </button>
-                </div>
               </div>
               
               <div className="text-xs text-gray-600 space-y-1">
@@ -233,7 +211,25 @@ export default function KeysList({
         <div className="lg:sticky lg:top-4">
           {selectedKey && keyInfo ? (
             <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
-              <h4 className="font-medium text-gray-900 mb-3">Key Details</h4>
+              <div className="flex justify-between items-center mb-3">
+                <h4 className="font-medium text-gray-900">Key Details</h4>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => handleResetKey(selectedKey)}
+                    disabled={actionLoading === `reset-${selectedKey}`}
+                    className="px-3 py-1 text-xs bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-200 disabled:opacity-50"
+                  >
+                    {actionLoading === `reset-${selectedKey}` ? '...' : 'Reset'}
+                  </button>
+                  <button
+                    onClick={() => handleDeleteKey(selectedKey)}
+                    disabled={actionLoading === `delete-${selectedKey}`}
+                    className="px-3 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200 disabled:opacity-50"
+                  >
+                    {actionLoading === `delete-${selectedKey}` ? '...' : 'Delete'}
+                  </button>
+                </div>
+              </div>
               <div className="space-y-2 text-sm">
                 <div>
                   <span className="font-medium text-gray-700">Key:</span>
@@ -287,7 +283,7 @@ export default function KeysList({
             </div>
           ) : (
             <div className="p-4 border border-gray-200 rounded-lg bg-gray-50 text-center text-gray-500">
-              Click &quot;Info&quot; on a key to view details
+              Click on a key to view details and actions
             </div>
           )}
         </div>
