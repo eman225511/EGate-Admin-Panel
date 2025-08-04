@@ -16,7 +16,7 @@
 3. **Use Your Admin Panel**
    - Once deployed, you'll get a URL like `https://your-app.vercel.app`
    - Open the URL and enter:
-     - **API URL**: Your EGate API URL (e.g., `https://key-sys-web.vercel.app/api`)
+     - **API URL**: Your EGate API URL (e.g., `https://your-app.vercel.app/api`)
      - **Admin Password**: Your EGate API admin password
 
 ## Manual Deployment
