@@ -1,36 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function POST(request: NextRequest) {
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams
+  const apiUrl = searchParams.get('apiUrl')
+  const admin = searchParams.get('admin')
+
+  if (!apiUrl || !admin) {
+    return NextResponse.json(
+      { error: 'Missing required parameters' },
+      { status: 400 }
+    )
+  }
+
   try {
-    const body = await request.json()
-    const { apiUrl, admin, key, hwid } = body
-
-    if (!apiUrl || !admin) {
-      return NextResponse.json(
-        { error: 'Missing required parameters' },
-        { status: 400 }
-      )
-    }
-
-    let url: URL
-    
-    if (key) {
-      // Create specific key
-      url = new URL(`${apiUrl}/create`)
-      url.searchParams.set('admin', admin)
-      url.searchParams.set('key', key)
-      if (hwid) {
-        url.searchParams.set('hwid', hwid)
-      }
-    } else {
-      // Generate random key
-      url = new URL(`${apiUrl}/make`)
-      url.searchParams.set('admin', admin)
-    }
-
-    const response = await fetch(url.toString(), {
-      method: 'POST',
-    })
+    // Generate random key using /make endpoint
+    const response = await fetch(`${apiUrl}/make?admin=${encodeURIComponent(admin)}`)
     
     const data = await response.text()
     

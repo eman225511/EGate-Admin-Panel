@@ -77,6 +77,45 @@ export default function AdminDashboard({ apiUrl, adminPassword, onLogout }: Admi
     ))
   }
 
+  const handleDeleteAll = async () => {
+    const userInput = prompt('⚠️ DANGER: This will permanently delete ALL license keys!\n\nType "I want to delete all" to confirm:')
+    
+    if (userInput !== 'I want to delete all') {
+      alert('❌ Cancelled: Confirmation text did not match')
+      return
+    }
+
+    const finalConfirm = confirm('🚨 FINAL WARNING: Are you absolutely sure you want to delete ALL license keys? This action cannot be undone!')
+    
+    if (!finalConfirm) {
+      return
+    }
+
+    setIsLoading(true)
+    setError('')
+
+    try {
+      const response = await fetch(`/api/deleteAll?apiUrl=${encodeURIComponent(apiUrl)}&admin=${encodeURIComponent(adminPassword)}`)
+      
+      if (!response.ok) {
+        throw new Error(`Failed to delete all keys: ${response.status}`)
+      }
+
+      const result = await response.text()
+      
+      if (result.includes('All keys deleted') || result.includes('deleted')) {
+        setKeys([])
+        alert('✅ All license keys have been deleted successfully')
+      } else {
+        throw new Error(result)
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete all keys')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <div>
       {/* Header */}
@@ -90,12 +129,22 @@ export default function AdminDashboard({ apiUrl, adminPassword, onLogout }: Admi
               Connected to: {apiUrl}
             </p>
           </div>
-          <button
-            onClick={onLogout}
-            className="px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500"
-          >
-            Disconnect
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={handleDeleteAll}
+              disabled={isLoading || keys.length === 0}
+              className="px-4 py-2 text-sm bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              title={keys.length === 0 ? "No keys to delete" : "Delete all license keys"}
+            >
+              🗑️ Delete All ({keys.length})
+            </button>
+            <button
+              onClick={onLogout}
+              className="px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500"
+            >
+              Disconnect
+            </button>
+          </div>
         </div>
       </div>
 

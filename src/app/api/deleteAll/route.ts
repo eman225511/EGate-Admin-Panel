@@ -4,9 +4,8 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
   const apiUrl = searchParams.get('apiUrl')
   const admin = searchParams.get('admin')
-  const key = searchParams.get('key')
 
-  if (!apiUrl || !admin || !key) {
+  if (!apiUrl || !admin) {
     return NextResponse.json(
       { error: 'Missing required parameters' },
       { status: 400 }
@@ -14,7 +13,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const response = await fetch(`${apiUrl}/adminReset?admin=${encodeURIComponent(admin)}&key=${encodeURIComponent(key)}`)
+    const response = await fetch(`${apiUrl}/deleteAll?admin=${encodeURIComponent(admin)}`)
     
     const data = await response.text()
     
@@ -25,9 +24,9 @@ export async function GET(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error('Reset key proxy error:', error)
+    console.error('Delete all keys proxy error:', error)
     return NextResponse.json(
-      { error: 'Failed to reset key' },
+      { error: 'Failed to delete all keys' },
       { status: 500 }
     )
   }

@@ -7,7 +7,7 @@ interface LoginFormProps {
 }
 
 export default function LoginForm({ onLogin }: LoginFormProps) {
-  const [apiUrl, setApiUrl] = useState('https://key-sys-web.vercel.app/api')
+  const [apiUrl, setApiUrl] = useState('')
   const [adminPassword, setAdminPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')

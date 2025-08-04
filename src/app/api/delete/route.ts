@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function DELETE(request: NextRequest) {
+export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
   const apiUrl = searchParams.get('apiUrl')
   const admin = searchParams.get('admin')
@@ -14,9 +14,7 @@ export async function DELETE(request: NextRequest) {
   }
 
   try {
-    const response = await fetch(`${apiUrl}/delete?admin=${encodeURIComponent(admin)}&key=${encodeURIComponent(key)}`, {
-      method: 'DELETE',
-    })
+    const response = await fetch(`${apiUrl}/delete?admin=${encodeURIComponent(admin)}&key=${encodeURIComponent(key)}`)
     
     const data = await response.text()
     
