@@ -156,7 +156,7 @@ export default function CreateKeyForm({ apiUrl, adminPassword, onKeyCreated }: C
         <div className="mt-6 p-4 bg-yellow-50 rounded-md">
           <h4 className="text-sm font-medium text-yellow-800 mb-2">Important:</h4>
           <ul className="text-xs text-yellow-700 space-y-1">
-            <li>• Save this key securely - you won't see it again in this format</li>
+            <li>• Save this key securely - you won&apos;t see it again in this format</li>
             <li>• The key is not bound to any HWID until first use</li>
             <li>• You can manage this key from the main dashboard</li>
           </ul>
