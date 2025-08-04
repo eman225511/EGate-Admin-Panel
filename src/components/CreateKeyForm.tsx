@@ -45,7 +45,8 @@ export default function CreateKeyForm({ apiUrl, adminPassword, onKeyCreated }: C
       
       if (newKey && newKey.length > 0) {
         setCreatedKey(newKey)
-        onKeyCreated(newKey)
+        // Don't call onKeyCreated to prevent navigation back to list
+        // onKeyCreated(newKey)
       } else {
         throw new Error('Unexpected response: ' + result)
       }
