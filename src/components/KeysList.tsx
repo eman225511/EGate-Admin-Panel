@@ -32,6 +32,18 @@ export default function KeysList({
   const [keyInfo, setKeyInfo] = useState<any>(null)
   const [actionLoading, setActionLoading] = useState<string | null>(null)
   const [actionError, setActionError] = useState('')
+  const [copyFeedback, setCopyFeedback] = useState<string | null>(null)
+
+  const handleCopyKey = async (key: string, event: any) => {
+    event.stopPropagation() // Prevent triggering the key info click
+    try {
+      await navigator.clipboard.writeText(key)
+      setCopyFeedback(key)
+      setTimeout(() => setCopyFeedback(null), 2000)
+    } catch (err) {
+      console.error('Failed to copy key:', err)
+    }
+  }
 
   const handleGetKeyInfo = async (key: string) => {
     setActionLoading(`info-${key}`)
@@ -190,10 +202,21 @@ export default function KeysList({
               }`}
               onClick={() => handleGetKeyInfo(keyObj.key)}
             >
-              <div className="mb-2">
-                <h4 className="font-mono text-sm font-medium text-gray-900 break-all">
+              <div className="mb-2 flex justify-between items-start">
+                <h4 className="font-mono text-sm font-medium text-gray-900 break-all flex-1 pr-2">
                   {keyObj.key}
                 </h4>
+                <button
+                  onClick={(e) => handleCopyKey(keyObj.key, e)}
+                  className={`px-2 py-1 text-xs rounded transition-colors flex-shrink-0 ${
+                    copyFeedback === keyObj.key 
+                      ? 'bg-green-100 text-green-700' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                  title="Copy key to clipboard"
+                >
+                  {copyFeedback === keyObj.key ? '✓' : '📋'}
+                </button>
               </div>
               
               <div className="text-xs text-gray-600 space-y-1">
@@ -233,8 +256,21 @@ export default function KeysList({
               <div className="space-y-2 text-sm">
                 <div>
                   <span className="font-medium text-gray-700">Key:</span>
-                  <div className="font-mono bg-white p-2 rounded border text-xs break-all mt-1">
-                    {keyInfo.key}
+                  <div className="flex items-center space-x-2 mt-1">
+                    <div className="font-mono bg-white p-2 rounded border text-xs break-all flex-1">
+                      {keyInfo.key}
+                    </div>
+                    <button
+                      onClick={() => handleCopyKey(keyInfo.key, { stopPropagation: () => {} })}
+                      className={`px-2 py-1 text-xs rounded transition-colors flex-shrink-0 ${
+                        copyFeedback === keyInfo.key 
+                          ? 'bg-green-100 text-green-700' 
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                      title="Copy key to clipboard"
+                    >
+                      {copyFeedback === keyInfo.key ? '✓' : '📋'}
+                    </button>
                   </div>
                 </div>
                 
