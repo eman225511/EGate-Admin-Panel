@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import KeysList from './KeysList'
 import CreateKeyForm from './CreateKeyForm'
+import BulkKeyForm from './BulkKeyForm'
 
 interface AdminDashboardProps {
   apiUrl: string
@@ -21,7 +22,7 @@ export default function AdminDashboard({ apiUrl, adminPassword, onLogout }: Admi
   const [keys, setKeys] = useState<LicenseKey[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
-  const [activeTab, setActiveTab] = useState<'keys' | 'create'>('keys')
+  const [activeTab, setActiveTab] = useState<'keys' | 'create' | 'bulk'>('keys')
 
   const loadKeys = useCallback(async () => {
     setIsLoading(true)
@@ -67,6 +68,13 @@ export default function AdminDashboard({ apiUrl, adminPassword, onLogout }: Admi
   const handleKeyCreated = (newKey: string) => {
     setKeys([...keys, { key: newKey, created: new Date().toISOString() }])
     setActiveTab('keys')
+  }
+
+  const handleBulkKeysCreated = (newKeys: string[]) => {
+    const timestamp = new Date().toISOString()
+    const newKeyObjects = newKeys.map(key => ({ key, created: timestamp }))
+    setKeys([...keys, ...newKeyObjects])
+    // Stay on bulk tab to show results
   }
 
   const handleKeyReset = (resetKey: string) => {
@@ -172,6 +180,16 @@ export default function AdminDashboard({ apiUrl, adminPassword, onLogout }: Admi
             >
               Create New Key
             </button>
+            <button
+              onClick={() => setActiveTab('bulk')}
+              className={`px-6 py-3 text-sm font-medium border-b-2 ${
+                activeTab === 'bulk'
+                  ? 'text-blue-600 border-blue-600'
+                  : 'text-gray-500 border-transparent hover:text-gray-700'
+              }`}
+            >
+              Bulk Generate
+            </button>
           </nav>
         </div>
 
@@ -199,6 +217,14 @@ export default function AdminDashboard({ apiUrl, adminPassword, onLogout }: Admi
               apiUrl={apiUrl}
               adminPassword={adminPassword}
               onKeyCreated={handleKeyCreated}
+            />
+          )}
+
+          {activeTab === 'bulk' && (
+            <BulkKeyForm
+              apiUrl={apiUrl}
+              adminPassword={adminPassword}
+              onKeysCreated={handleBulkKeysCreated}
             />
           )}
         </div>
