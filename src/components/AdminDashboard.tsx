@@ -16,6 +16,8 @@ interface LicenseKey {
   hwid?: string
   created?: string
   lastReset?: string
+  email?: string
+  email_bound_at?: string
 }
 
 export default function AdminDashboard({ apiUrl, adminPassword, onLogout }: AdminDashboardProps) {
@@ -46,7 +48,9 @@ export default function AdminDashboard({ apiUrl, adminPassword, onLogout }: Admi
         key,
         hwid: info.hwid,
         created: info.created,
-        lastReset: info.lastReset || info.last_reset
+        lastReset: info.lastReset || info.last_reset,
+        email: info.email,
+        email_bound_at: info.email_bound_at
       }))
 
       setKeys(keysArray)
