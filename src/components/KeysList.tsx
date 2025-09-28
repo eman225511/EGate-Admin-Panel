@@ -7,6 +7,8 @@ interface LicenseKey {
   hwid?: string
   created?: string
   lastReset?: string
+  email?: string
+  email_bound_at?: string
 }
 
 interface KeysListProps {
@@ -55,7 +57,8 @@ export default function KeysList({
       const searchLower = searchTerm.toLowerCase()
       return (
         key.key.toLowerCase().includes(searchLower) ||
-        (key.hwid && key.hwid.toLowerCase().includes(searchLower))
+        (key.hwid && key.hwid.toLowerCase().includes(searchLower)) ||
+        (key.email && key.email.toLowerCase().includes(searchLower))
       )
     })
     .sort((a, b) => {
@@ -174,6 +177,41 @@ export default function KeysList({
     }
   }
 
+  const handleResetEmail = async (key: string) => {
+    if (!confirm(`Are you sure you want to reset the email binding for key: ${key}?\n\nThis will remove the current email and allow a new email to be bound.`)) {
+      return
+    }
+
+    setActionLoading(`resetEmail-${key}`)
+    setActionError('')
+
+    try {
+      const response = await fetch(`/api/resetEmail?apiUrl=${encodeURIComponent(apiUrl)}&key=${encodeURIComponent(key)}&admin=${encodeURIComponent(adminPassword)}`)
+      
+      if (!response.ok) {
+        throw new Error(`Failed to reset email: ${response.status}`)
+      }
+
+      const result = await response.text()
+      
+      if (result.includes('email reset successfully')) {
+        if (selectedKey === key) {
+          setKeyInfo(null)
+          handleGetKeyInfo(key) // Refresh the key info to show updated email status
+        }
+        alert('✅ Email binding reset successfully')
+      } else if (result.includes('key has no email bound')) {
+        alert('ℹ️ This key has no email binding to reset')
+      } else {
+        throw new Error(result)
+      }
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : 'Failed to reset email')
+    } finally {
+      setActionLoading(null)
+    }
+  }
+
   const formatDate = (dateString?: string) => {
     if (!dateString) return 'Never'
     try {
@@ -231,7 +269,7 @@ export default function KeysList({
           </div>
           <input
             type="text"
-            placeholder="Search keys or HWID..."
+            placeholder="Search keys, HWID, or email..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
@@ -337,6 +375,7 @@ export default function KeysList({
               
               <div className="text-xs text-gray-600 space-y-1">
                 <div>HWID: {keyObj.hwid || 'Not bound'}</div>
+                <div>Email: {keyObj.email || 'Not bound'}</div>
                 <div>Created: {formatDate(keyObj.created)}</div>
                 {keyObj.lastReset && (
                   <div>Last Reset: {formatDate(keyObj.lastReset)}</div>
@@ -359,7 +398,14 @@ export default function KeysList({
                     disabled={actionLoading === `reset-${selectedKey}`}
                     className="px-3 py-1 text-xs bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-200 disabled:opacity-50"
                   >
-                    {actionLoading === `reset-${selectedKey}` ? '...' : 'Reset'}
+                    {actionLoading === `reset-${selectedKey}` ? '...' : 'Reset HWID'}
+                  </button>
+                  <button
+                    onClick={() => handleResetEmail(selectedKey)}
+                    disabled={actionLoading === `resetEmail-${selectedKey}`}
+                    className="px-3 py-1 text-xs bg-orange-100 text-orange-700 rounded hover:bg-orange-200 disabled:opacity-50"
+                  >
+                    {actionLoading === `resetEmail-${selectedKey}` ? '...' : 'Reset Email'}
                   </button>
                   <button
                     onClick={() => handleDeleteKey(selectedKey)}
@@ -397,6 +443,20 @@ export default function KeysList({
                     <div className="font-mono bg-white p-2 rounded border text-xs break-all mt-1">
                       {keyInfo.hwid}
                     </div>
+                  </div>
+                )}
+                
+                <div>
+                  <span className="font-medium text-gray-700">Email:</span>
+                  <div className="font-mono bg-white p-2 rounded border text-xs break-all mt-1">
+                    {keyInfo.email || 'Not bound'}
+                  </div>
+                </div>
+
+                {keyInfo.email_bound_at && (
+                  <div>
+                    <span className="font-medium text-gray-700">Email Bound At:</span>
+                    <div className="text-gray-600 mt-1">{formatDate(keyInfo.email_bound_at)}</div>
                   </div>
                 )}
                 
