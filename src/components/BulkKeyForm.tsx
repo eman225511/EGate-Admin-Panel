@@ -25,6 +25,7 @@ export default function BulkKeyForm({ apiUrl, adminPassword, onKeysCreated }: Bu
 
     setIsLoading(true)
     setError('')
+    setGeneratedKeys([])
     const newKeys: string[] = []
 
     try {
@@ -51,11 +52,13 @@ export default function BulkKeyForm({ apiUrl, adminPassword, onKeysCreated }: Bu
         
         if (newKey && newKey.length > 0) {
           newKeys.push(newKey)
+          // Update incremental progress so UI shows count while generating
+          setGeneratedKeys((prev) => [...prev, newKey])
         } else {
           throw new Error(`Invalid response for key ${i + 1}: ${result}`)
         }
       }
-
+      // ensure state is consistent (in case of rapid finishes)
       setGeneratedKeys(newKeys)
       setShowResults(true)
       onKeysCreated(newKeys)
@@ -105,10 +108,10 @@ export default function BulkKeyForm({ apiUrl, adminPassword, onKeysCreated }: Bu
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
             {generatedKeys.length} Keys Generated Successfully!
           </h3>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600 dark:text-gray-300">
             Your bulk license keys have been generated. Download or copy them now.
           </p>
         </div>
@@ -135,15 +138,15 @@ export default function BulkKeyForm({ apiUrl, adminPassword, onKeysCreated }: Bu
 
           {/* Keys Display */}
           <div className="bg-gray-50 rounded-lg p-4">
-            <h4 className="font-medium text-gray-900 mb-3">Generated Keys:</h4>
-            <div className="bg-white rounded border p-4 max-h-96 overflow-y-auto">
+            <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Generated Keys:</h4>
+            <div className="bg-white dark:bg-gray-700 rounded border dark:border-gray-700 p-4 max-h-96 overflow-y-auto">
               <div className="font-mono text-sm space-y-2">
                 {generatedKeys.map((key, index) => (
-                  <div key={index} className="flex items-center justify-between py-1 border-b border-gray-100 last:border-b-0">
-                    <span className="text-gray-700">{index + 1}. {key}</span>
+                  <div key={index} className="flex items-center justify-between py-1 border-b border-gray-100 dark:border-gray-700 last:border-b-0">
+                    <span className="text-gray-700 dark:text-gray-300">{index + 1}. {key}</span>
                     <button
                       onClick={() => navigator.clipboard.writeText(key)}
-                      className="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded hover:bg-gray-200"
+                      className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-200 rounded hover:bg-gray-200 dark:hover:bg-gray-600"
                       title="Copy this key"
                     >
                       📋
@@ -155,10 +158,10 @@ export default function BulkKeyForm({ apiUrl, adminPassword, onKeysCreated }: Bu
           </div>
 
           {/* Generate More Button */}
-          <div className="text-center pt-4 border-t border-gray-200">
+          <div className="text-center pt-4 border-t border-gray-200 dark:border-gray-700">
             <button
               onClick={handleGenerateMore}
-              className="px-6 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+              className="px-6 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-100 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
             >
               Generate More Keys
             </button>
@@ -181,17 +184,17 @@ export default function BulkKeyForm({ apiUrl, adminPassword, onKeysCreated }: Bu
   return (
     <div className="max-w-md mx-auto">
       <div className="text-center mb-6">
-        <h3 className="text-lg font-medium text-gray-900 mb-2">
+        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
           Bulk Key Generation
         </h3>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600 dark:text-gray-300">
           Generate multiple license keys at once for efficient distribution
         </p>
       </div>
 
       <form onSubmit={handleGenerate} className="space-y-4">
         <div>
-          <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="amount" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
             Number of Keys to Generate
           </label>
           <input
@@ -201,10 +204,10 @@ export default function BulkKeyForm({ apiUrl, adminPassword, onKeysCreated }: Bu
             max="100"
             value={amount}
             onChange={(e) => setAmount(parseInt(e.target.value) || 1)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             required
           />
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             Enter a number between 1 and 100
           </p>
         </div>
@@ -234,9 +237,9 @@ export default function BulkKeyForm({ apiUrl, adminPassword, onKeysCreated }: Bu
         </button>
       </form>
 
-      <div className="mt-6 p-4 bg-gray-50 rounded-md">
-        <h4 className="text-sm font-medium text-gray-900 mb-2">How it works:</h4>
-        <ul className="text-xs text-gray-600 space-y-1">
+      <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-md">
+        <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">How it works:</h4>
+        <ul className="text-xs text-gray-600 dark:text-gray-300 space-y-1">
           <li>• Keys are generated one by one to ensure uniqueness</li>
           <li>• All keys will be added to your GitHub repository</li>
           <li>• You can download all keys as a single .txt file</li>

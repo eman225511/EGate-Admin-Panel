@@ -225,7 +225,7 @@ export default function KeysList({
     return (
       <div className="text-center py-8">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-        <p className="mt-2 text-gray-600">Loading keys...</p>
+  <p className="mt-2 text-gray-600 dark:text-gray-300">Loading keys...</p>
       </div>
     )
   }
@@ -233,7 +233,7 @@ export default function KeysList({
   if (keys.length === 0) {
     return (
       <div className="text-center py-8">
-        <p className="text-gray-600 mb-4">No license keys found</p>
+  <p className="text-gray-600 dark:text-gray-300 mb-4">No license keys found</p>
         <button
           onClick={onRefresh}
           className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -247,12 +247,12 @@ export default function KeysList({
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-medium text-gray-900">
+        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
           License Keys ({filteredAndSortedKeys.length}{keys.length !== filteredAndSortedKeys.length ? ` of ${keys.length}` : ''})
         </h3>
         <button
           onClick={onRefresh}
-          className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500"
+          className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-100 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 dark:focus:ring-gray-400"
         >
           Refresh
         </button>
@@ -272,7 +272,7 @@ export default function KeysList({
             placeholder="Search keys, HWID, or email..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white dark:bg-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-gray-100 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
           />
           {searchTerm && (
             <button
@@ -289,7 +289,7 @@ export default function KeysList({
         {/* Sort Controls */}
         <div className="flex flex-wrap gap-4 items-center">
           <div className="flex items-center space-x-2">
-            <label className="text-sm font-medium text-gray-700">Sort by:</label>
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-200">Sort by:</label>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as 'date' | 'key' | 'hwid')}
@@ -302,7 +302,7 @@ export default function KeysList({
           </div>
 
           <div className="flex items-center space-x-2">
-            <label className="text-sm font-medium text-gray-700">Order:</label>
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-200">Order:</label>
             <select
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
@@ -320,7 +320,7 @@ export default function KeysList({
                 setSortBy('date')
                 setSortOrder('desc')
               }}
-              className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-md hover:bg-gray-50"
+              className="px-3 py-1 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700"
             >
               Clear Filters
             </button>
@@ -329,7 +329,7 @@ export default function KeysList({
       </div>
 
       {actionError && (
-        <div className="mb-4 p-3 text-sm text-red-800 bg-red-100 border border-red-200 rounded-md">
+        <div className="mb-4 p-3 text-sm text-red-800 dark:text-red-200 bg-red-100 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded-md">
           {actionError}
         </div>
       )}
@@ -339,7 +339,7 @@ export default function KeysList({
         <div className="space-y-3">
           {filteredAndSortedKeys.length === 0 && searchTerm ? (
             <div className="text-center py-8">
-              <p className="text-gray-600 mb-2">No keys found matching &quot;{searchTerm}&quot;</p>
+              <p className="text-gray-600 dark:text-gray-300 mb-2">No keys found matching &quot;{searchTerm}&quot;</p>
               <button
                 onClick={() => setSearchTerm('')}
                 className="text-blue-600 hover:text-blue-800 text-sm"
@@ -352,7 +352,7 @@ export default function KeysList({
             <div
               key={keyObj.key}
               className={`p-4 border rounded-lg cursor-pointer hover:border-gray-300 transition-colors ${
-                selectedKey === keyObj.key ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
+                selectedKey === keyObj.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/10 dark:border-blue-400' : 'border-gray-200 dark:border-gray-700'
               }`}
               onClick={() => handleGetKeyInfo(keyObj.key)}
             >
@@ -363,9 +363,9 @@ export default function KeysList({
                 <button
                   onClick={(e) => handleCopyKey(keyObj.key, e)}
                   className={`px-2 py-1 text-xs rounded transition-colors flex-shrink-0 ${
-                    copyFeedback === keyObj.key 
-                      ? 'bg-green-100 text-green-700' 
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            copyFeedback === keyObj.key 
+              ? 'bg-green-100 text-green-700' 
+              : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-600'
                   }`}
                   title="Copy key to clipboard"
                 >
@@ -373,7 +373,7 @@ export default function KeysList({
                 </button>
               </div>
               
-              <div className="text-xs text-gray-600 space-y-1">
+              <div className="text-xs text-gray-600 dark:text-gray-300 space-y-1">
                 <div>HWID: {keyObj.hwid || 'Not bound'}</div>
                 <div>Email: {keyObj.email || 'Not bound'}</div>
                 <div>Created: {formatDate(keyObj.created)}</div>
@@ -389,28 +389,28 @@ export default function KeysList({
         {/* Key Details */}
         <div className="lg:sticky lg:top-4">
           {selectedKey && keyInfo ? (
-            <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+            <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800">
               <div className="flex justify-between items-center mb-3">
-                <h4 className="font-medium text-gray-900">Key Details</h4>
+                <h4 className="font-medium text-gray-900 dark:text-gray-100">Key Details</h4>
                 <div className="flex space-x-2">
                   <button
                     onClick={() => handleResetKey(selectedKey)}
                     disabled={actionLoading === `reset-${selectedKey}`}
-                    className="px-3 py-1 text-xs bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-200 disabled:opacity-50"
+                    className="px-3 py-1 text-xs bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-200 dark:bg-yellow-200/10 dark:text-yellow-300 disabled:opacity-50"
                   >
                     {actionLoading === `reset-${selectedKey}` ? '...' : 'Reset HWID'}
                   </button>
                   <button
                     onClick={() => handleResetEmail(selectedKey)}
                     disabled={actionLoading === `resetEmail-${selectedKey}`}
-                    className="px-3 py-1 text-xs bg-orange-100 text-orange-700 rounded hover:bg-orange-200 disabled:opacity-50"
+                    className="px-3 py-1 text-xs bg-orange-100 text-orange-700 rounded hover:bg-orange-200 dark:bg-orange-200/10 dark:text-orange-300 disabled:opacity-50"
                   >
                     {actionLoading === `resetEmail-${selectedKey}` ? '...' : 'Reset Email'}
                   </button>
                   <button
                     onClick={() => handleDeleteKey(selectedKey)}
                     disabled={actionLoading === `delete-${selectedKey}`}
-                    className="px-3 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200 disabled:opacity-50"
+                    className="px-3 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200 dark:bg-red-200/10 dark:text-red-300 disabled:opacity-50"
                   >
                     {actionLoading === `delete-${selectedKey}` ? '...' : 'Delete'}
                   </button>
@@ -418,9 +418,9 @@ export default function KeysList({
               </div>
               <div className="space-y-2 text-sm">
                 <div>
-                  <span className="font-medium text-gray-700">Key:</span>
+                  <span className="font-medium text-gray-700 dark:text-gray-200">Key:</span>
                   <div className="flex items-center space-x-2 mt-1">
-                    <div className="font-mono bg-white p-2 rounded border text-xs break-all flex-1">
+                    <div className="font-mono bg-white dark:bg-gray-700 p-2 rounded border dark:border-gray-700 text-xs break-all flex-1">
                       {keyInfo.key}
                     </div>
                     <button
@@ -428,7 +428,7 @@ export default function KeysList({
                       className={`px-2 py-1 text-xs rounded transition-colors flex-shrink-0 ${
                         copyFeedback === keyInfo.key 
                           ? 'bg-green-100 text-green-700' 
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-600'
                       }`}
                       title="Copy key to clipboard"
                     >
@@ -439,7 +439,7 @@ export default function KeysList({
                 
                 {keyInfo.hwid && (
                   <div>
-                    <span className="font-medium text-gray-700">HWID:</span>
+                    <span className="font-medium text-gray-700 dark:text-gray-200">HWID:</span>
                     <div className="font-mono bg-white p-2 rounded border text-xs break-all mt-1">
                       {keyInfo.hwid}
                     </div>
@@ -447,7 +447,7 @@ export default function KeysList({
                 )}
                 
                 <div>
-                  <span className="font-medium text-gray-700">Email:</span>
+                  <span className="font-medium text-gray-700 dark:text-gray-200">Email:</span>
                   <div className="font-mono bg-white p-2 rounded border text-xs break-all mt-1">
                     {keyInfo.email || 'Not bound'}
                   </div>
@@ -455,28 +455,28 @@ export default function KeysList({
 
                 {keyInfo.email_bound_at && (
                   <div>
-                    <span className="font-medium text-gray-700">Email Bound At:</span>
-                    <div className="text-gray-600 mt-1">{formatDate(keyInfo.email_bound_at)}</div>
+                    <span className="font-medium text-gray-700 dark:text-gray-200">Email Bound At:</span>
+                    <div className="text-gray-600 dark:text-gray-300 mt-1">{formatDate(keyInfo.email_bound_at)}</div>
                   </div>
                 )}
                 
                 {keyInfo.created && (
                   <div>
-                    <span className="font-medium text-gray-700">Created:</span>
-                    <div className="text-gray-600 mt-1">{formatDate(keyInfo.created)}</div>
+                    <span className="font-medium text-gray-700 dark:text-gray-200">Created:</span>
+                    <div className="text-gray-600 dark:text-gray-300 mt-1">{formatDate(keyInfo.created)}</div>
                   </div>
                 )}
                 
                 {keyInfo.lastReset && (
                   <div>
-                    <span className="font-medium text-gray-700">Last Reset:</span>
-                    <div className="text-gray-600 mt-1">{formatDate(keyInfo.lastReset)}</div>
+                    <span className="font-medium text-gray-700 dark:text-gray-200">Last Reset:</span>
+                    <div className="text-gray-600 dark:text-gray-300 mt-1">{formatDate(keyInfo.lastReset)}</div>
                   </div>
                 )}
                 
                 {keyInfo.info && typeof keyInfo.info === 'string' && (
                   <div>
-                    <span className="font-medium text-gray-700">Raw Response:</span>
+                    <span className="font-medium text-gray-700 dark:text-gray-200">Raw Response:</span>
                     <div className="bg-white p-2 rounded border text-xs mt-1">
                       {keyInfo.info}
                     </div>

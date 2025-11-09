@@ -131,13 +131,13 @@ export default function AdminDashboard({ apiUrl, adminPassword, onLogout }: Admi
   return (
     <div>
       {/* Header */}
-      <div className="bg-white rounded-lg shadow-sm border p-4 mb-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-4 mb-6">
         <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-lg font-semibold text-gray-900">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
               EGate Admin Dashboard
             </h2>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-300">
               Connected to: {apiUrl}
             </p>
           </div>
@@ -152,7 +152,7 @@ export default function AdminDashboard({ apiUrl, adminPassword, onLogout }: Admi
             </button>
             <button
               onClick={onLogout}
-              className="px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500"
+              className="px-4 py-2 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-100 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 dark:focus:ring-gray-400"
             >
               Disconnect
             </button>
@@ -161,15 +161,15 @@ export default function AdminDashboard({ apiUrl, adminPassword, onLogout }: Admi
       </div>
 
       {/* Tab Navigation */}
-      <div className="bg-white rounded-lg shadow-sm border mb-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 mb-6">
         <div className="border-b">
           <nav className="flex">
             <button
               onClick={() => setActiveTab('keys')}
               className={`px-6 py-3 text-sm font-medium border-b-2 ${
                 activeTab === 'keys'
-                  ? 'text-blue-600 border-blue-600'
-                  : 'text-gray-500 border-transparent hover:text-gray-700'
+                  ? 'text-blue-600 dark:text-blue-400 border-blue-600 dark:border-blue-400'
+                  : 'text-gray-500 dark:text-gray-300 border-transparent hover:text-gray-700 dark:hover:text-gray-100'
               }`}
             >
               License Keys ({keys.length})
@@ -178,8 +178,8 @@ export default function AdminDashboard({ apiUrl, adminPassword, onLogout }: Admi
               onClick={() => setActiveTab('create')}
               className={`px-6 py-3 text-sm font-medium border-b-2 ${
                 activeTab === 'create'
-                  ? 'text-blue-600 border-blue-600'
-                  : 'text-gray-500 border-transparent hover:text-gray-700'
+                  ? 'text-blue-600 dark:text-blue-400 border-blue-600 dark:border-blue-400'
+                  : 'text-gray-500 dark:text-gray-300 border-transparent hover:text-gray-700 dark:hover:text-gray-100'
               }`}
             >
               Create New Key
@@ -188,8 +188,8 @@ export default function AdminDashboard({ apiUrl, adminPassword, onLogout }: Admi
               onClick={() => setActiveTab('bulk')}
               className={`px-6 py-3 text-sm font-medium border-b-2 ${
                 activeTab === 'bulk'
-                  ? 'text-blue-600 border-blue-600'
-                  : 'text-gray-500 border-transparent hover:text-gray-700'
+                  ? 'text-blue-600 dark:text-blue-400 border-blue-600 dark:border-blue-400'
+                  : 'text-gray-500 dark:text-gray-300 border-transparent hover:text-gray-700 dark:hover:text-gray-100'
               }`}
             >
               Bulk Generate
